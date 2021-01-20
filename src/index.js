@@ -5,6 +5,9 @@ ramenInfo(1);
 
 /* how do you search for the first data set id in the database? */
 
+/* create routes with the query url */
+/* fetch all ramen, get first index, ramen[0].id */
+
 /* CONST VARIABLES */
 
 const ramenMenu = document.querySelector('#ramen-menu');
@@ -46,7 +49,7 @@ function updateRatingComment(id, updatedRamenObj) {
         .then(renderRamenImages);
 };
 
-function deleteRamen(id){
+function deleteRamen(id) {
     fetch(`http://localhost:3000/ramens/${id}`, {
         method: 'DELETE',
         headers: {
@@ -54,7 +57,10 @@ function deleteRamen(id){
         },
     })
         .then(response => response.json())
-        .then(console.log);
+        .then(data => { 
+            let currentRamen = ramenMenu.querySelector(`[data-id="${id}"]`);
+            currentRamen.remove();
+        })
 };
 
 /* Don't know how to re-render the page for delete + add ramen */
@@ -68,6 +74,7 @@ function addNewRamen(newRamenObj) {
         body: JSON.stringify(newRamenObj),
     })
         .then(response => response.json())
+        .then(data => renderOneImageMenu(data))
 };
 
 /* Event Listeners */
@@ -118,16 +125,20 @@ function displayRamenInfo(ramen) {
 
 function renderRamenMenu(ramenArray) {
     ramenArray.forEach(ramen => {
-        const img = document.createElement('img');
-        img.src = ramen.image;
-        img.alt = ramen.name;
-        img.dataset.id = ramen.id;
-
-        ramenMenu.append(img);
+        renderOneImageMenu(ramen)
     })
 
     ramenMenu.addEventListener('click', event => {
         const currentId = event.target.dataset.id;
         ramenInfo(currentId);
     })
+}
+
+function renderOneImageMenu(ramen) {
+    const img = document.createElement('img');
+    img.src = ramen.image;
+    img.alt = ramen.name;
+    img.dataset.id = ramen.id;
+
+    ramenMenu.append(img);
 }
