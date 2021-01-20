@@ -1,6 +1,9 @@
 // write your code here
 
 renderRamenImages();
+ramenInfo(1);
+
+/* how do you search for the first data set id in the database? */
 
 /* CONST VARIABLES */
 
@@ -9,8 +12,11 @@ const displayImage = document.querySelector('.detail-image');
 const displayName = document.querySelector('.name');
 const displayRestaurant = document.querySelector('.restaurant');
 const ramenForm = document.querySelector('#ramen-rating');
-let rating = ramenForm.querySelector('input[name="rating"]');
-let comment = ramenForm.querySelector('input[name="comment"]');
+const rating = ramenForm.querySelector('input[name="rating"]');
+const comment = ramenForm.querySelector('input[name="comment"]');
+
+const newForm = document.querySelector('#new-ramen');
+const newComment = newForm.querySelector('#new-comment')
 
 /* FETCH REQUESTS */
 
@@ -35,10 +41,21 @@ function updateRatingComment(id, updatedRamenObj) {
         body: JSON.stringify(updatedRamenObj),
     })
         .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-        })
-}
+        .then(renderRamenImages);
+};
+
+/* Don't know how to re-render the page */
+
+function addNewRamen(newRamenObj) {
+    fetch('http://localhost:3000/ramens/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newRamenObj),
+    })
+        .then(response => response.json())
+};
 
 /* Event Listeners */
 
@@ -47,10 +64,24 @@ ramenForm.addEventListener('submit', event => {
     event.preventDefault();
     // console.log(typeof (ramenForm.dataset.id));
     let updatedRamenObj = {
-        rating: event.target.rating.value, 
+        rating: event.target.rating.value,
         comment: event.target.comment.value
     };
     updateRatingComment(event.target.dataset.id, updatedRamenObj);
+})
+
+newForm.addEventListener('submit', event => {
+    event.preventDefault();
+
+    let newRamenObj = {
+        name: event.target.name.value,
+        restaurant: event.target.restaurant.value,
+        image: event.target.image.value,
+        rating: event.target.rating.value,
+        comment: newComment.value
+    };
+
+    addNewRamen(newRamenObj);
 })
 
 /* DOM MANIPULATION */
