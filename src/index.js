@@ -16,7 +16,9 @@ const rating = ramenForm.querySelector('input[name="rating"]');
 const comment = ramenForm.querySelector('input[name="comment"]');
 
 const newForm = document.querySelector('#new-ramen');
-const newComment = newForm.querySelector('#new-comment')
+const newComment = newForm.querySelector('#new-comment');
+
+const deleteBtn = document.querySelector('#delete-btn');
 
 /* FETCH REQUESTS */
 
@@ -44,7 +46,18 @@ function updateRatingComment(id, updatedRamenObj) {
         .then(renderRamenImages);
 };
 
-/* Don't know how to re-render the page */
+function deleteRamen(id){
+    fetch(`http://localhost:3000/ramens/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => response.json())
+        .then(console.log);
+};
+
+/* Don't know how to re-render the page for delete + add ramen */
 
 function addNewRamen(newRamenObj) {
     fetch('http://localhost:3000/ramens/', {
@@ -68,7 +81,7 @@ ramenForm.addEventListener('submit', event => {
         comment: event.target.comment.value
     };
     updateRatingComment(event.target.dataset.id, updatedRamenObj);
-})
+});
 
 newForm.addEventListener('submit', event => {
     event.preventDefault();
@@ -82,7 +95,13 @@ newForm.addEventListener('submit', event => {
     };
 
     addNewRamen(newRamenObj);
+});
+
+deleteBtn.addEventListener('click', event => {
+    const deleteItemId = ramenForm.dataset.id
+    deleteRamen(deleteItemId);
 })
+
 
 /* DOM MANIPULATION */
 
